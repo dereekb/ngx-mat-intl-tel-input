@@ -1,6 +1,6 @@
 {
   "name": "ngx-mat-intl-tel-input",
-  "version": "4.1.0",
+  "version": "4.1.1-beta",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -17,18 +17,37 @@
     "copy-readme": "cp ./README.md ./dist/ngx-mat-intl-tel-input",
     "copy-files": "npm run copy-license && npm run copy-readme"
   },
+  "module": "./dist/fesm2015/ngx-mat-intl-tel-input.mjs",
+  "es2020": "./dist/fesm2020/ngx-mat-intl-tel-input.mjs",
+  "esm2020": "./dist/esm2020/ngx-mat-intl-tel-input.mjs",
+  "fesm2020": "./dist/fesm2020/ngx-mat-intl-tel-input.mjs",
+  "fesm2015": "./dist/fesm2015/ngx-mat-intl-tel-input.mjs",
+  "typings": "./dist/ngx-mat-intl-tel-input.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./dist/package.json"
+    },
+    ".": {
+      "types": "./dist/ngx-mat-intl-tel-input.d.ts",
+      "esm2020": "./dist/esm2020/ngx-mat-intl-tel-input.mjs",
+      "es2020": "./dist/fesm2020/ngx-mat-intl-tel-input.mjs",
+      "es2015": "./dist/fesm2015/ngx-mat-intl-tel-input.mjs",
+      "node": "./dist/fesm2015/ngx-mat-intl-tel-input.mjs",
+      "default": "./dist/fesm2020/ngx-mat-intl-tel-input.mjs"
+    }
+  },
   "private": true,
   "dependencies": {
-    "@angular/animations": "~13.0.0",
-    "@angular/cdk": "~13.0.0",
-    "@angular/common": "~13.0.0",
-    "@angular/compiler": "~13.0.0",
-    "@angular/core": "~13.0.0",
-    "@angular/forms": "~13.0.0",
-    "@angular/material": "~13.0.0",
-    "@angular/platform-browser": "~13.0.0",
-    "@angular/platform-browser-dynamic": "~13.0.0",
-    "@angular/router": "~13.0.0",
+    "@angular/animations": "^13.0.0",
+    "@angular/cdk": "^13.0.0",
+    "@angular/common": "^13.0.0",
+    "@angular/compiler": "^13.0.0",
+    "@angular/core": "^13.0.0",
+    "@angular/forms": "^13.0.0",
+    "@angular/material": "^13.0.0",
+    "@angular/platform-browser": "^13.0.0",
+    "@angular/platform-browser-dynamic": "^13.0.0",
+    "@angular/router": "^13.0.0",
     "core-js": "^3.19.1",
     "libphonenumber-js": "^1.9.42",
     "rxjs": "~7.4.0",
@@ -43,8 +62,8 @@
     "@angular-eslint/schematics": "^13.0.0-alpha.0",
     "@angular-eslint/template-parser": "^13.0.0-alpha.0",
     "@angular/cli": "~13.0.1",
-    "@angular/compiler-cli": "~13.0.0",
-    "@angular/language-service": "~13.0.0",
+    "@angular/compiler-cli": "^13.0.0",
+    "@angular/language-service": "^13.0.0",
     "@types/jasmine": "~3.10.2",
     "@types/jasminewd2": "~2.0.10",
     "@types/node": "^16.11.7",
