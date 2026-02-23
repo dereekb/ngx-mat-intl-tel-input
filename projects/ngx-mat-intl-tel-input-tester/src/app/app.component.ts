@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, viewChild } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -39,9 +39,7 @@ interface ProfileForm {
     ]
 })
 export class AppComponent implements AfterViewInit {
-  @ViewChild(NgxMatIntlTelInputComponent) phoneInput:
-    | NgxMatIntlTelInputComponent
-    | undefined;
+  readonly phoneInput = viewChild(NgxMatIntlTelInputComponent);
 
   phoneForm = new FormGroup<PhoneForm>({
     name: new FormControl(null, [Validators.required]),
@@ -66,8 +64,9 @@ export class AppComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    if (this.phoneInput && this.phoneInput.matMenu) {
-      this.phoneInput.matMenu.panelClass = 'custom-panel';
+    const phoneInput = this.phoneInput();
+    if (phoneInput && phoneInput.matMenu) {
+      phoneInput.matMenu.panelClass = 'custom-panel';
     }
   }
 }

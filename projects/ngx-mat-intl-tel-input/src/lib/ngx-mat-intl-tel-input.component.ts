@@ -1,19 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  DoCheck,
-  ElementRef,
-  EventEmitter,
-  HostBinding,
-  Input,
-  OnDestroy,
-  OnInit,
-  Optional,
-  Output,
-  Self,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DoCheck, ElementRef, HostBinding, Input, OnDestroy, OnInit, ViewChild, inject, output } from '@angular/core';
 import { MatFormFieldControl } from '@angular/material/form-field';
 
 import {
@@ -79,6 +64,15 @@ export class NgxMatIntlTelInputComponent
   OnDestroy,
   DoCheck,
   MatFormFieldControl<any> {
+  private _changeDetectorRef = inject(ChangeDetectorRef);
+  private countryCodeData = inject(CountryCode);
+  private fm = inject(FocusMonitor);
+  private elRef = inject<ElementRef<HTMLElement>>(ElementRef);
+  ngControl = inject(NgControl, { optional: true, self: true });
+  _parentForm = inject(NgForm, { optional: true });
+  _parentFormGroup = inject(FormGroupDirective, { optional: true });
+  _defaultErrorStateMatcher = inject(ErrorStateMatcher);
+
   static nextId = 0;
 
   @Input() preferredCountries: Array<string> = [];
@@ -119,7 +113,7 @@ export class NgxMatIntlTelInputComponent
   numberInstance: PhoneNumber | undefined;
   value: E164Number | string | undefined;
   searchCriteria: string | undefined;
-  @Output() countryChanged = new EventEmitter<Country>();
+  readonly countryChanged = output<Country>();
 
   private previousFormattedNumber: string | undefined;
   private _format: PhoneNumberFormat = 'default';
@@ -135,16 +129,10 @@ export class NgxMatIntlTelInputComponent
   propagateChange = (_: any) => {
   };
 
-  constructor(
-    private _changeDetectorRef: ChangeDetectorRef,
-    private countryCodeData: CountryCode,
-    private fm: FocusMonitor,
-    private elRef: ElementRef<HTMLElement>,
-    @Optional() @Self() public ngControl: NgControl,
-    @Optional() public _parentForm: NgForm,
-    @Optional() public _parentFormGroup: FormGroupDirective,
-    public _defaultErrorStateMatcher: ErrorStateMatcher
-  ) {
+  constructor() {
+    const fm = this.fm;
+    const elRef = this.elRef;
+
     fm.monitor(elRef, true).subscribe((origin) => {
       if (this.focused && !origin) {
         this.onTouched();
