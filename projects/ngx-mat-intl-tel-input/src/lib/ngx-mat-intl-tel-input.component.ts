@@ -14,7 +14,7 @@ import {
   Self,
   ViewChild,
 } from '@angular/core';
-import {MatFormFieldControl} from '@angular/material/form-field';
+import { MatFormFieldControl } from '@angular/material/form-field';
 
 import {
   FormGroupDirective,
@@ -33,80 +33,52 @@ import {
   parsePhoneNumberFromString,
   PhoneNumber,
 } from 'libphonenumber-js';
-import {CountryCode, Examples} from './data/country-code';
-import {Country} from './model/country.model';
-import {PhoneNumberFormat} from './model/phone-number-format.model';
-import {phoneNumberValidator} from './ngx-mat-intl-tel-input.validator';
+import { CountryCode, Examples } from './data/country-code';
+import { Country } from './model/country.model';
+import { PhoneNumberFormat } from './model/phone-number-format.model';
+import { phoneNumberValidator } from './ngx-mat-intl-tel-input.validator';
 
-import {FocusMonitor} from '@angular/cdk/a11y';
-import {coerceBooleanProperty} from '@angular/cdk/coercion';
-import {CommonModule} from '@angular/common';
-import {MatButtonModule} from '@angular/material/button';
-import {
-  CanUpdateErrorState,
-  ErrorStateMatcher,
-  mixinErrorState,
-  _AbstractConstructor,
-  _Constructor,
-} from '@angular/material/core';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatMenu, MatMenuModule} from '@angular/material/menu';
-import {Subject} from 'rxjs';
-import {SearchPipe} from './search.pipe';
-
-class NgxMatIntlTelInputBase {
-  readonly stateChanges = new Subject<void>();
-
-  constructor(
-    public _defaultErrorStateMatcher: ErrorStateMatcher,
-    public _parentForm: NgForm,
-    public _parentFormGroup: FormGroupDirective,
-    /** @docs-private */
-    public ngControl: NgControl
-  ) {
-  }
-}
-
-declare type CanUpdateErrorStateCtor = _Constructor<CanUpdateErrorState> &
-  _AbstractConstructor<CanUpdateErrorState>;
-
-const _NgxMatIntlTelInputMixinBase: CanUpdateErrorStateCtor &
-  typeof NgxMatIntlTelInputBase = mixinErrorState(NgxMatIntlTelInputBase);
-
+import { FocusMonitor } from '@angular/cdk/a11y';
+import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { CommonModule } from '@angular/common';
+import { MatButtonModule } from '@angular/material/button';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatInput, MatInputModule } from '@angular/material/input';
+import { MatMenu, MatMenuModule } from '@angular/material/menu';
+import { Subject } from 'rxjs';
+import { SearchPipe } from './search.pipe';
 @Component({
-    // eslint-disable-next-line @angular-eslint/component-selector
-    selector: 'ngx-mat-intl-tel-input',
-    templateUrl: './ngx-mat-intl-tel-input.component.html',
-    styleUrls: ['./ngx-mat-intl-tel-input.component.scss'],
-    imports: [
-        CommonModule,
-        FormsModule,
-        MatInputModule,
-        MatMenuModule,
-        MatButtonModule,
-        MatDividerModule,
-        ReactiveFormsModule,
-        SearchPipe
-    ],
-    providers: [
-        CountryCode,
-        { provide: MatFormFieldControl, useExisting: NgxMatIntlTelInputComponent },
-        {
-            provide: NG_VALIDATORS,
-            useValue: phoneNumberValidator,
-            multi: true,
-        },
-    ],
-    changeDetection: ChangeDetectionStrategy.OnPush
+  // eslint-disable-next-line @angular-eslint/component-selector
+  selector: 'ngx-mat-intl-tel-input',
+  templateUrl: './ngx-mat-intl-tel-input.component.html',
+  styleUrls: ['./ngx-mat-intl-tel-input.component.scss'],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatInputModule,
+    MatMenuModule,
+    MatButtonModule,
+    MatDividerModule,
+    ReactiveFormsModule,
+    SearchPipe
+  ],
+  providers: [
+    CountryCode,
+    { provide: MatFormFieldControl, useExisting: NgxMatIntlTelInputComponent },
+    {
+      provide: NG_VALIDATORS,
+      useValue: phoneNumberValidator,
+      multi: true,
+    },
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NgxMatIntlTelInputComponent
-  extends _NgxMatIntlTelInputMixinBase
   implements OnInit,
-    OnDestroy,
-    DoCheck,
-    CanUpdateErrorState,
-    MatFormFieldControl<any> {
+  OnDestroy,
+  DoCheck,
+  MatFormFieldControl<any> {
   static nextId = 0;
 
   @Input() preferredCountries: Array<string> = [];
@@ -137,6 +109,7 @@ export class NgxMatIntlTelInputComponent
   private _disabled = false;
   stateChanges = new Subject<void>();
   focused = false;
+  errorState = false;
   @HostBinding()
   id = `ngx-mat-intl-tel-input-${NgxMatIntlTelInputComponent.nextId++}`;
   phoneNumber: NationalNumber | undefined;
@@ -168,11 +141,10 @@ export class NgxMatIntlTelInputComponent
     private fm: FocusMonitor,
     private elRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl,
-    @Optional() _parentForm: NgForm,
-    @Optional() _parentFormGroup: FormGroupDirective,
-    _defaultErrorStateMatcher: ErrorStateMatcher
+    @Optional() public _parentForm: NgForm,
+    @Optional() public _parentFormGroup: FormGroupDirective,
+    public _defaultErrorStateMatcher: ErrorStateMatcher
   ) {
-    super(_defaultErrorStateMatcher, _parentForm, _parentFormGroup, ngControl);
     fm.monitor(elRef, true).subscribe((origin) => {
       if (this.focused && !origin) {
         this.onTouched();
@@ -223,6 +195,18 @@ export class NgxMatIntlTelInputComponent
   ngDoCheck(): void {
     if (this.ngControl) {
       this.updateErrorState();
+    }
+  }
+
+  updateErrorState() {
+    const parent = this._parentFormGroup || this._parentForm;
+    const matcher = this.errorStateMatcher || this._defaultErrorStateMatcher;
+    const control = this.ngControl ? this.ngControl.control : null;
+    const newState = matcher.isErrorState(control as any, parent);
+
+    if (newState !== this.errorState) {
+      this.errorState = newState;
+      this.stateChanges.next(undefined);
     }
   }
 

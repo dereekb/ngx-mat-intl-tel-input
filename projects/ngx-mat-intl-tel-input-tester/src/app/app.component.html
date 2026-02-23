@@ -8,10 +8,12 @@
         matInput
         placeholder="Name"
         [formControl]="phoneForm.controls.name"
-      />
-      <mat-error *ngIf="phoneForm.controls.name.errors?.required">
-        Required Field
-      </mat-error>
+        />
+      @if (phoneForm.controls.name.errors?.required) {
+        <mat-error>
+          Required Field
+        </mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field>
@@ -20,10 +22,12 @@
         matInput
         placeholder="surname"
         [formControl]="phoneForm.controls.surname"
-      />
-      <mat-error *ngIf="phoneForm.controls.surname.errors?.required">
-        Required Field
-      </mat-error>
+        />
+      @if (phoneForm.controls.surname.errors?.required) {
+        <mat-error>
+          Required Field
+        </mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field style="width: 50%">
@@ -37,16 +41,19 @@
         #phone
       ></ngx-mat-intl-tel-input>
       <mat-hint>e.g. {{ phone.selectedCountry.placeHolder }}</mat-hint>
-      <mat-error *ngIf="phoneForm.controls.phone.errors?.required">
-        Required Field
-      </mat-error>
-      <mat-error
-        *ngIf="
-          f.submitted && phoneForm.controls.phone.errors?.validatePhoneNumber
-        "
-      >
-        Invalid Number
-      </mat-error>
+      @if (phoneForm.controls.phone.errors?.required) {
+        <mat-error>
+          Required Field
+        </mat-error>
+      }
+      @if (
+        f.submitted && phoneForm.controls.phone.errors?.validatePhoneNumber
+        ) {
+        <mat-error
+          >
+          Invalid Number
+        </mat-error>
+      }
     </mat-form-field>
 
     <button mat-button>Submit</button>
@@ -72,9 +79,11 @@
   </div>
   <div>
     <strong>Form validation errors:</strong>
-    <pre *ngFor="let control of phoneForm.controls | keyvalue">
-      {{ control.key }}: {{ control.value.errors | json }}
-    </pre>
+    @for (control of phoneForm.controls | keyvalue; track control) {
+      <pre>
+        {{ control.key }}: {{ control.value.errors | json }}
+      </pre>
+    }
   </div>
 
   <mat-divider></mat-divider>
@@ -86,7 +95,7 @@
         matInput
         type="text"
         [formControl]="profileForm.controls.firstName"
-      />
+        />
     </mat-form-field>
     <mat-form-field>
       <mat-label> Last Name: </mat-label>
@@ -94,7 +103,7 @@
         matInput
         type="text"
         [formControl]="profileForm.controls.lastName"
-      />
+        />
     </mat-form-field>
     <mat-form-field style="width: 50%">
       <ngx-mat-intl-tel-input
@@ -109,12 +118,16 @@
         #phone1
       ></ngx-mat-intl-tel-input>
       <mat-hint>e.g. {{ phone1.selectedCountry.placeHolder }}</mat-hint>
-      <mat-error *ngIf="profileForm.controls.phone.errors?.required">
-        Required Field
-      </mat-error>
-      <mat-error *ngIf="profileForm.controls.phone.errors?.validatePhoneNumber">
-        Invalid Number
-      </mat-error>
+      @if (profileForm.controls.phone.errors?.required) {
+        <mat-error>
+          Required Field
+        </mat-error>
+      }
+      @if (profileForm.controls.phone.errors?.validatePhoneNumber) {
+        <mat-error>
+          Invalid Number
+        </mat-error>
+      }
     </mat-form-field>
   </form>
 
